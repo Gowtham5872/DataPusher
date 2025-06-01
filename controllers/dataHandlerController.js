@@ -7,13 +7,13 @@ exports.incomingData = (req, res) => {
 
   if (!token) return res.status(401).json({ message: 'Un Authenticate' });
 
-  // 1. Find the account by secret token
+
   db.get('SELECT * FROM accounts WHERE secret_token = ?', [token], (err, account) => {
     if (err || !account) {
       return res.status(401).json({ message: 'Invalid Token' });
     }
 
-    // 2. Get all destinations for the account
+   
     db.all('SELECT * FROM destinations WHERE account_id = ?', [account.id], async (err, destinations) => {
       if (err) return res.status(500).json({ message: 'Error fetching destinations' });
 
@@ -38,13 +38,13 @@ exports.incomingData = (req, res) => {
               url: dest.url,
               headers: {
                 ...headers,
-                'Content-Type': 'application/json'  // ✅ Force this
+                'Content-Type': 'application/json'  
               },
               data
             });
           }
         } catch (e) {
-          console.error('❌ Failed to push to destination:', dest.url, '\n🛑 Error:', e.message);
+          console.error('Failed to push to destination:', dest.url, '\n Error:', e.message);
         }
       }
 
